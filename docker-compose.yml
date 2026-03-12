@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  lightroom-analytics:
+    build: .
+    container_name: lightroom_analytics
+    ports:
+      - "5100:5100"
+    volumes:
+      # Data persistency for the sqlite tracking db
+      - ./data:/app/data
+      # Mount point for the user to drop their .lrcat files so the container can read them
+      - ./import:/app/import:ro
+    environment:
+      - IN_DOCKER=true
+    restart: unless-stopped

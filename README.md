@@ -62,6 +62,21 @@ De Terminal zal bevestigen dat de server gestart is met een bericht dat op het v
 
 Laat dit Terminal/Command Prompt venster openstaan! (Als je het venster sluit, stopt de server).
 
+### 4. Uitvoeren via Docker (Optioneel)
+Als je liever geen Python op je eigen systeem installeert, kun je de app via Docker draaien.
+1. Zorg dat je **Docker** (en Docker Compose) geïnstalleerd hebt.
+2. Kopieer je complete Lightroom catalogus (het `.lrcat` bestand) naar de nieuwe `import/` map in the projectdirectory:
+   ```bash
+   cp pad/naar/jouw_catalogus.lrcat ./import/
+   ```
+3. Start de container op de achtergrond:
+   ```bash
+   docker-compose up -d
+   ```
+4. De app draait nu op `http://127.0.0.1:5100/`. *Let op: Omdat een Docker container niet fysiek door jouw Mac/Windows bestanden kan bladeren, zal de native "Browse" filepicker knop vervangen worden door een handmatig invoerveld. Vul hier `/app/import/jouw_catalogus.lrcat` in.*
+
+De verwerkte data wordt veilig en persistent opgeslagen in de map `./data/` op je eigen hardeschijf.
+
 ---
 
 ## 🚀 Gebruikershandleiding

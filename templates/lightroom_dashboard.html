@@ -285,8 +285,13 @@
                 const res = await fetch('/api/browse');
                 const data = await res.json();
                 
-                if (data.path) {
+                if (res.ok && data.path) {
                     input.value = data.path;
+                } else if (!res.ok && data.error) {
+                    // Fallback for Docker mode
+                    alert(data.error);
+                    input.removeAttribute('readonly');
+                    input.focus();
                 }
             } catch (err) {
                 console.error("Browse failed", err);

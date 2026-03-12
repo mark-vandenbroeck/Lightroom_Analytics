@@ -121,6 +121,9 @@ def config():
 
 @app.route('/api/browse')
 def browse_file():
+    if os.environ.get('IN_DOCKER'):
+        return jsonify({'error': 'Docker modus actief: Vul het pad handmatig in (bijv. /app/import/jouw_catalogus.lrcat).'}), 400
+
     try:
         if platform.system() == 'Darwin':
             # Prompt for an LRCAT file using a native macOS dialog
