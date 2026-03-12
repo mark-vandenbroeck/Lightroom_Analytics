@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table - Lightroom Statistics</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        .header-actions {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: 500;
+            margin-left: 15px;
+        }
+
+        .filters {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #f1f3f5;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header-actions">
+            <h1>Raw Data Browser</h1>
+            <div class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/config">Configuration</a>
+            </div>
+        </div>
+
+        <div class="filters">
+            <label>From: <input type="month" id="startMonth"></label>
+            <label>To: <input type="month" id="endMonth"></label>
+            <label>Camera: <select id="cameraFilter">
+                    <option value="">All</option>
+                </select></label>
+            <label>Lens: <select id="lensFilter">
+                    <option value="">All</option>
+                </select></label>
+            <button onclick="updateTable()">Apply</button>
+            <button onclick="clearFilter()">Clear</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Capture Time</th>
+                        <th>File Name</th>
+                        <th>Camera</th>
+                        <th>Lens</th>
+                        <th>Rating</th>
+                        <th>Pick</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBody">
+                    <!-- Rows here -->
+                </tbody>
+            </table>
+            <div id="loading" class="loading" style="display: none;">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchFilters() {
+            const response = await fetch('/api/filters');
+            const data = await response.json();
+
+            const cameraSelect = document.getElementById('cameraFilter');
+            data.cameras.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = opt.textContent = c;
+                cameraSelect.appendChild(opt);
+            });
+
+            const lensSelect = document.getElementById('lensFilter');
+            data.lenses.forEach(l => {
+                const opt = document.createElement('option');
+                opt.value = opt.textContent = l;
+                lensSelect.appendChild(opt);
+            });
+        }
+
+        async function updateTable() {
+            const tbody = document.getElementById('dataTableBody');
+            const loading = document.getElementById('loading');
+
+            tbody.innerHTML = '';
+            loading.style.display = 'block';
+
+            const params = new URLSearchParams();
+            const start = document.getElementById('startMonth').value;
+            const end = document.getElementById('endMonth').value;
+            const camera = document.getElementById('cameraFilter').value;
+            const lens = document.getElementById('lensFilter').value;
+
+            if (start) params.append('start_month', start);
+            if (end) params.append('end_month', end);
+            if (camera) params.append('camera', camera);
+            if (lens) params.append('lens', lens);
+
+            try {
+                const res = await fetch(`/api/data?${params.toString()}`);
+                const data = await res.json();
+
+                loading.style.display = 'none';
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">No records found</td></tr>';
+                    return;
+                }
+
+                // Limit display to 1000 is handled by backend, but good to be aware
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td>${row.CaptureTime || '-'}</td>
+                    <td>${row.BaseName || '-'}</td>
+                    <td>${row.Camera || '-'}</td>
+                    <td>${row.Lens || '-'}</td>
+                    <td>${row.Rating}</td>
+                    <td>${row.pick == 1 ? '✅' : '-'}</td>
+                `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                loading.innerText = 'Error loading data';
+            }
+        }
+
+        function clearFilter() {
+            document.getElementById('startMonth').value = '';
+            document.getElementById('endMonth').value = '';
+            document.getElementById('cameraFilter').value = '';
+            document.getElementById('lensFilter').value = '';
+            updateTable();
+        }
+
+        fetchFilters();
+        updateTable();
+    </script>
+
+</body>
+
+</html>

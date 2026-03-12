@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lens Configuration - Lightroom Statistics</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        .header-actions {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .actions {
+            text-align: right;
+            margin-top: 1rem;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header-actions">
+            <div>
+                <a href="/">&larr; Dashboard</a>
+                <span style="color: #ccc; margin: 0 10px;">|</span>
+                <a href="/table">Data Table</a>
+            </div>
+            <h1>Lens Group Configuration</h1>
+        </div>
+
+        <p>Assign a <strong>Group Name</strong> to multiple lenses to group them together in charts and filters. Leave
+            empty to use the original name.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Original Lens Name</th>
+                    <th>Group Name (Alias)</th>
+                </tr>
+            </thead>
+            <tbody id="lensTableBody">
+                <!-- Rows will be populated here -->
+            </tbody>
+        </table>
+
+        <div class="actions">
+            <button onclick="saveMappings()">Save Changes</button>
+        </div>
+        <div id="statusMessage" class="status"></div>
+    </div>
+
+    <script>
+        async function loadMappings() {
+            try {
+                const response = await fetch('/api/mappings');
+                const mappings = await response.json();
+                const tbody = document.getElementById('lensTableBody');
+                tbody.innerHTML = '';
+
+                mappings.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td>${item.original}</td>
+                    <td>
+                        <input type="text" 
+                               class="group-input" 
+                               data-original="${item.original}" 
+                               value="${item.group}" 
+                               placeholder="Enter group name...">
+                    </td>
+                `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                showStatus('Error loading mappings: ' + error.message, 'error');
+            }
+        }
+
+        async function saveMappings() {
+            const inputs = document.querySelectorAll('.group-input');
+            const data = Array.from(inputs).map(input => ({
+                original: input.dataset.original,
+                group: input.value
+            }));
+
+            try {
+                const response = await fetch('/api/mappings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showStatus('Changes saved successfully!', 'success');
+                    setTimeout(() => {
+                        document.getElementById('statusMessage').style.display = 'none';
+                    }, 3000);
+                } else {
+                    showStatus('Failed to save changes.', 'error');
+                }
+            } catch (error) {
+                showStatus('Error saving: ' + error.message, 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = 'status ' + type;
+        }
+
+        // Initial load
+        loadMappings();
+    </script>
+
+</body>
+
+</html>

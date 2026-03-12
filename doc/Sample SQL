@@ -1,0 +1,40 @@
+Sample SQL
+
+WITH ModCount AS (
+    SELECT
+        image
+        ,COUNT(name) AS EditCount
+    FROM Adobe_libraryImageDevelopHistoryStep
+    WHERE 1=1
+    AND Adobe_libraryImageDevelopHistoryStep.name NOT LIKE 'Export%'
+    AND Adobe_libraryImageDevelopHistoryStep.name NOT LIKE 'Import%'
+    AND Adobe_libraryImageDevelopHistoryStep.name NOT LIKE 'Print%'
+    GROUP BY image
+)
+SELECT
+    AgLibraryRootFolder.name AS RootFolderName,
+    AgLibraryFolder.pathFromRoot AS PathFromRoot,
+    AgLibraryFile.baseName AS BaseName,
+    AgLibraryFile.extension AS FileType,
+    Adobe_images.captureTime as CaptureTime,
+    AgLibraryFile.originalFilename AS OriginalFileName,
+    COALESCE(Adobe_images.rating,0) AS Rating,
+    Adobe_images.colorLabels AS ColorLabel,
+    Adobe_images.touchCount AS TouchCount,
+    AgHarvestedExifMetadata.focalLength AS FocalLength, -- focal length mm
+    ROUND(AgHarvestedExifMetadata.aperture,3) AS Aperture,
+    AgHarvestedExifMetadata.shutterSpeed AS ShutterSpeed, --format not understood
+ROUND(AgHarvestedExifMetadata.isoSpeedRating,0) AS ISO,
+COALESCE(AgInternedExifCameraModel.value,"Unknown camera") AS Camera,
+COALESCE(AgInternedExifLens.value,"Unknown lens") AS Lens,
+Adobe_images.pick,
+COALESCE(ModCount.EditCount,0) AS EditCount -- remove this to avoid depedency on ModCount view
+FROM
+    AgLibraryFile -- every image in catalog has an entry in this table
+    LEFT JOIN AgLibraryFolder ON AgLibraryFolder.id_local=AgLibraryFile.folder
+    LEFT JOIN AgLibraryRootFolder ON AgLibraryRootFolder.id_local=AgLibraryFolder.rootFolder
+    LEFT JOIN Adobe_images ON AgLibraryFile.id_local=Adobe_images.rootFile
+    LEFT JOIN AgHarvestedExifMetadata ON AgHarvestedExifMetadata.image = Adobe_images.id_local
+    LEFT JOIN AgInternedExifCameraModel ON AgInternedExifCameraModel.id_local = AgHarvestedExifMetadata.cameraModelRef
+    LEFT JOIN AgInternedExifLens ON AgInternedExifLens.id_local = AgHarvestedExifMetadata.lensRef
+    LEFT JOIN ModCount ON ModCount.image = Adobe_images.id_local -- remove this to avoid depedency on ModCount view

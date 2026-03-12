@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightroom Statistics</title>
+    <!-- Use Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 60vh;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h1>Lightroom Import & Pick Statistics</h1>
+            <div>
+                <a href="/table"
+                    style="text-decoration: none; color: #3498db; font-weight: 500; margin-right: 15px;">View Data
+                    Table</a>
+                <a href="/config" style="text-decoration: none; color: #3498db; font-weight: 500;">Configure Lenses
+                    &rarr;</a>
+            </div>
+        </div>
+
+        <div
+            style="margin-bottom: 20px; display: flex; gap: 20px; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <label>
+                From:
+                <input type="month" id="startMonth">
+            </label>
+            <label>
+                To:
+                <input type="month" id="endMonth">
+            </label>
+            <label>
+                Camera:
+                <select id="cameraFilter">
+                    <option value="">All Cameras</option>
+                </select>
+            </label>
+            <label>
+                Lens:
+                <select id="lensFilter">
+                    <option value="">All Lenses</option>
+                </select>
+            </label>
+            <button onclick="updateChart()">Apply Filter</button>
+            <button onclick="clearFilter()">Clear</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let myChartInstance = null;
+
+        async function fetchFilters() {
+            const response = await fetch('/api/filters');
+            const data = await response.json();
+
+            const cameraSelect = document.getElementById('cameraFilter');
+            data.cameras.forEach(camera => {
+                const option = document.createElement('option');
+                option.value = camera;
+                option.textContent = camera;
+                cameraSelect.appendChild(option);
+            });
+
+            const lensSelect = document.getElementById('lensFilter');
+            data.lenses.forEach(lens => {
+                const option = document.createElement('option');
+                option.value = lens;
+                option.textContent = lens;
+                lensSelect.appendChild(option);
+            });
+        }
+
+        async function fetchData(start = '', end = '', camera = '', lens = '') {
+            const params = new URLSearchParams();
+            if (start) params.append('start_month', start);
+            if (end) params.append('end_month', end);
+            if (camera) params.append('camera', camera);
+            if (lens) params.append('lens', lens);
+
+            const response = await fetch(`/api/stats?${params.toString()}`);
+            return await response.json();
+        }
+
+        async function renderChart(data) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            if (myChartInstance) {
+                myChartInstance.destroy();
+            }
+
+            myChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Total Photos',
+                            data: data.total,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Picked Photos',
+                            data: data.picked,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Count'
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+        }
+
+        async function updateChart() {
+            const start = document.getElementById('startMonth').value;
+            const end = document.getElementById('endMonth').value;
+            const camera = document.getElementById('cameraFilter').value;
+            const lens = document.getElementById('lensFilter').value;
+            const data = await fetchData(start, end, camera, lens);
+            renderChart(data);
+        }
+
+        async function clearFilter() {
+            document.getElementById('startMonth').value = '';
+            document.getElementById('endMonth').value = '';
+            document.getElementById('cameraFilter').value = '';
+            document.getElementById('lensFilter').value = '';
+            updateChart();
+        }
+
+        // Initial load
+        fetchFilters();
+        updateChart();
+    </script>
+
+</body>
+
+</html>

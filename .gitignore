@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+env/
+.env
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+data/
+
+# Lightroom catalogs (Do not upload!)
+*.lrcat
+*.lrcat-data
+*.lrcat-wal
+*.lrcat-shm
+*.lrdata/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
