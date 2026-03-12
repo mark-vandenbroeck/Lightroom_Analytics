@@ -912,4 +912,5 @@ def lens_profile_metrics():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=PORT)
+    host = '0.0.0.0' if os.environ.get('IN_DOCKER') else '127.0.0.1'
+    app.run(debug=True, host=host, port=PORT)
