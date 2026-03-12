@@ -20,29 +20,37 @@
     <div class="max-w-6xl mx-auto space-y-6">
         
         <!-- Navigation -->
-        <nav class="flex flex-wrap justify-center gap-4 pb-2">
-            <a href="/" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">Dashboard</a>
-            <a href="/explore" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">Explore</a>
-            <a href="/exif" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">EXIF Analytics</a>
-            <a href="/scatter" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">Correlations</a>
-            <a href="/hitrate" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Hit Rates</a>
-            <a href="/edits" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Quality & Edits</a>
-            <a href="/lensprofile" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Lens Profiles</a>
-            <a href="/config" class="px-5 py-2.5 bg-blue-600 rounded-xl font-medium shadow-md text-white whitespace-nowrap">Lens Config</a>
+        <nav class="flex flex-wrap justify-center gap-4 pb-2 relative">
+            <a href="/" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">{{ t('nav_dashboard') }}</a>
+            <a href="/explore" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">{{ t('nav_explore') }}</a>
+            <a href="/exif" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">{{ t('nav_exif') }}</a>
+            <a href="/scatter" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">{{ t('nav_correlations') }}</a>
+            <a href="/hitrate" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{{ t('nav_hitrates') }}</a>
+            <a href="/edits" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{{ t('nav_quality') }}</a>
+            <a href="/lensprofile" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{{ t('nav_lensprofiles') }}</a>
+            <a href="/config" class="px-5 py-2.5 bg-blue-600 rounded-xl font-medium shadow-md text-white whitespace-nowrap">{{ t('nav_lensconfig') }}</a>
+            
+            <!-- Language Toggle Dropdown/Switch -->
+            <div class="absolute right-0 top-0 hidden md:block group">
+                <a href="/set_language/{{ 'nl' if current_lang == 'en' else 'en' }}" 
+                   class="flex items-center gap-2 px-3 py-2.5 glass rounded-xl font-semibold opacity-80 hover:opacity-100 transition-all text-sm">
+                   {% if current_lang == 'en' %}🇬🇧 EN{% else %}🇳🇱 NL{% endif %}
+                </a>
+            </div>
         </nav>
 
         <!-- Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center glass p-6 rounded-2xl shadow-xl gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tight">
-                    Lens Configuration
+                    {{ t('config_title') }}
                 </h1>
-                <p class="text-slate-400 mt-1 text-sm">Group different lens names from EXIF data into normalized display names.</p>
+                <p class="text-slate-400 mt-1 text-sm">{{ t('config_desc') }}</p>
             </div>
             
             <button id="saveBtn" class="px-6 py-3 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 font-semibold shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all flex items-center gap-2 text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                <span>Save Mappings</span>
+                <span>{{ t('config_save') }}</span>
             </button>
         </header>
 

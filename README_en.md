@@ -15,6 +15,7 @@ Stop making decisions for your next gear purchase based on gut feeling, but base
 *   **Quality & Edits:** See how your star ratings (1 to 5 stars) are distributed. On top of that, you can instantly see which lenses or cameras historically require the *most* slider adjustments in the develop module (Avg. Edit Count).
 *   **Lens Profiles (Deep Zoom):** Pick a lens from the dropdown and view its unique profile. Do you constantly fall back on the extremes of your zoom range when zooming? And which aperture do you press most often for this specific lens?
 *   **Lens Config:** Lightroom often recognizes lenses under cryptic names or varying text strings over the years. On this page, you can easily 'group' or rename lenses (e.g., "My 50mm Prime") so that all your charts stay clean and accurate.
+*   **Bilingual Interface:** Seamlessly switch between an English (🇬🇧 EN) and Dutch (🇳🇱 NL) interface using the toggle at the top to match your preference!
 
 ---
 

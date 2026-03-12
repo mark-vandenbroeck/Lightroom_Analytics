@@ -21,33 +21,41 @@
     <div class="max-w-6xl mx-auto space-y-6">
         
         <!-- Navigation -->
-        <nav class="flex flex-wrap justify-center gap-4 pb-2">
-            <a href="/" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">Dashboard</a>
-            <a href="/explore" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">Explore</a>
-            <a href="/exif" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">EXIF Analytics</a>
-            <a href="/scatter" class="px-5 py-2.5 bg-blue-600 rounded-xl font-medium shadow-md text-white whitespace-nowrap">Correlations</a>
-            <a href="/hitrate" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Hit Rates</a>
-            <a href="/edits" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Quality & Edits</a>
-            <a href="/lensprofile" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Lens Profiles</a>
-            <a href="/config" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">Lens Config</a>
+        <nav class="flex flex-wrap justify-center gap-4 pb-2 relative">
+            <a href="/" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">{{ t('nav_dashboard') }}</a>
+            <a href="/explore" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">{{ t('nav_explore') }}</a>
+            <a href="/exif" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">{{ t('nav_exif') }}</a>
+            <a href="/scatter" class="px-5 py-2.5 bg-blue-600 rounded-xl font-medium shadow-md text-white whitespace-nowrap">{{ t('nav_correlations') }}</a>
+            <a href="/hitrate" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{{ t('nav_hitrates') }}</a>
+            <a href="/edits" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{{ t('nav_quality') }}</a>
+            <a href="/lensprofile" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{{ t('nav_lensprofiles') }}</a>
+            <a href="/config" class="px-5 py-2.5 glass rounded-xl font-medium hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap">{{ t('nav_lensconfig') }}</a>
+            
+            <!-- Language Toggle Dropdown/Switch -->
+            <div class="absolute right-0 top-0 hidden md:block group">
+                <a href="/set_language/{{ 'nl' if current_lang == 'en' else 'en' }}" 
+                   class="flex items-center gap-2 px-3 py-2.5 glass rounded-xl font-semibold opacity-80 hover:opacity-100 transition-all text-sm">
+                   {% if current_lang == 'en' %}🇬🇧 EN{% else %}🇳🇱 NL{% endif %}
+                </a>
+            </div>
         </nav>
 
         <!-- Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center glass p-6 rounded-2xl shadow-xl gap-6">
             <div>
                 <h1 class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tight">
-                    Exposure Correlations
+                    {{ t('scatter_title') }}
                 </h1>
-                <p class="text-slate-400 mt-1 text-sm">Visualize the relationship between Aperture, Shutter Speed, and ISO.</p>
+                <p class="text-slate-400 mt-1 text-sm">{{ t('scatter_desc') }}</p>
             </div>
             
             <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                 <div class="flex-1 min-w-[150px]">
-                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">From Month</label>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_from') }}</label>
                     <input type="month" id="dateFrom" value="2018-01" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
                 </div>
                 <div class="flex-1 min-w-[150px]">
-                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">To Month</label>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_to') }}</label>
                     <input type="month" id="dateTo" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
                 </div>
             </div>
@@ -56,8 +64,8 @@
         <!-- Empty State -->
         <div id="noDataState" class="glass rounded-2xl shadow-xl p-12 text-center hidden">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-slate-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-            <h3 class="text-xl font-medium text-slate-300">No Data Available</h3>
-            <p class="text-slate-500 mt-2">No correlation data found for the selected date range.</p>
+            <h3 class="text-xl font-medium text-slate-300">{{ t('explore_empty') }}</h3>
+            <p class="text-slate-500 mt-2">{{ t('scatter_empty_desc') }}</p>
         </div>
 
         <!-- Charts Container -->
@@ -66,7 +74,7 @@
             <!-- Aperture vs Shutter Scatter -->
             <div class="glass p-6 rounded-2xl shadow-xl h-96 relative flex flex-col hover:-translate-y-1 transition-transform duration-300 lg:col-span-2">
                 <h2 class="text-lg font-semibold mb-4 w-full text-left text-slate-100 flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-blue-500"></span> Aperture vs. Shutter Speed
+                    <span class="w-3 h-3 rounded-full bg-blue-500"></span> {{ t('scatter_aperture_shutter') }}
                 </h2>
                 <div class="flex-grow w-full relative">
                     <canvas id="apertureShutterChart"></canvas>
@@ -76,7 +84,7 @@
             <!-- Shutter vs ISO Scatter -->
             <div class="glass p-6 rounded-2xl shadow-xl h-96 relative flex flex-col hover:-translate-y-1 transition-transform duration-300">
                 <h2 class="text-lg font-semibold w-full text-left text-slate-100 flex items-center gap-2 mb-4">
-                    <span class="w-3 h-3 rounded-full bg-rose-400"></span> Shutter Speed vs. ISO
+                    <span class="w-3 h-3 rounded-full bg-rose-400"></span> {{ t('scatter_iso_shutter') }}
                 </h2>
                 <div class="flex-grow w-full relative">
                     <canvas id="shutterIsoChart"></canvas>
@@ -86,7 +94,7 @@
             <!-- ISO vs Aperture Scatter -->
             <div class="glass p-6 rounded-2xl shadow-xl h-96 relative flex flex-col hover:-translate-y-1 transition-transform duration-300">
                 <h2 class="text-lg font-semibold w-full text-left text-slate-100 flex items-center gap-2 mb-4">
-                    <span class="w-3 h-3 rounded-full bg-teal-400"></span> ISO vs. Aperture
+                    <span class="w-3 h-3 rounded-full bg-teal-400"></span> {{ t('scatter_iso_aperture') }}
                 </h2>
                 <div class="flex-grow w-full relative">
                     <canvas id="isoApertureChart"></canvas>

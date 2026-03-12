@@ -2,13 +2,38 @@ import sqlite3
 import os
 import subprocess
 import platform
+import json
 from pathlib import Path
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, make_response, redirect
 
 app = Flask(__name__)
 PORT = 5100
 DEST_DB_PATH = 'data/Lightroom_dashboard.db'
 DEST_TABLE_NAME = 'Lightroom_raw'
+
+with open('translations.json', 'r', encoding='utf-8') as f:
+    TRANSLATIONS = json.load(f)
+
+@app.context_processor
+def inject_translations():
+    lang = request.cookies.get('lang', 'en')
+    if lang not in ['en', 'nl']:
+        lang = 'en'
+    
+    def t(key):
+        if key in TRANSLATIONS:
+            return TRANSLATIONS[key].get(lang, TRANSLATIONS[key].get('en', key))
+        return key
+
+    return dict(t=t, current_lang=lang)
+
+@app.route('/set_language/<lang>')
+def set_language(lang):
+    if lang not in ['en', 'nl']:
+        lang = 'en'
+    res = make_response(redirect(request.referrer or '/'))
+    res.set_cookie('lang', lang, max_age=31536000) # 1 year
+    return res
 
 def get_db_connection():
     conn = sqlite3.connect(DEST_DB_PATH)

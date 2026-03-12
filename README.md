@@ -15,6 +15,7 @@ Maak afwegingen voor je volgende aankoop niet op onderbuikgevoel, maar op harde 
 *   **Quality & Edits:** Bekijk hoe je ster-beoordelingen (1 tot 5 sterren) zich verhouden. Daarbovenop zie je direct weke lenzen of camera's historisch gezien de *meeste* schuifjes in de ontwikkelaars-module vereisen. (Avg. Edit Count).
 *   **Lens Profiles (Deep Zoom):** Kies een lens uit de dropdown en bekijk het unieke profiel. Val je tijdens het inzoomen telkens terug op de uitersten van je zoombereik? En welk diafragma druk je het vaakst in bij specifiek dit objectief?
 *   **Lens Config:** Vaak herkent Lightroom objectieven onder cryptische namen of wisselende tekst-strings over de jaren heen. Op deze pagina kun je lenzen simpelweg 'groeperen' of hernoemen (bijv: "Mijn 50mm Prime") zodat al je grafieken zuiver blijven.
+*   **Tweetalige Interface:** Schakel soepel tussen een Engelstalige (🇬🇧 EN) en Nederlandstalige (🇳🇱 NL) interface met de ingebouwde weergaveschakelaar, passend bij jouw voorkeur!
 
 ---
 
