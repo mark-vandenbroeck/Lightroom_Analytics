@@ -50,10 +50,22 @@
             
             <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                 <div class="flex-1 min-w-[150px]">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_camera') }}</label>
+                    <select id="cameraFilter" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
+                        <option value="">{{ t('filters_all_cameras') }}</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_lens') }}</label>
+                    <select id="lensFilter" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
+                        <option value="">{{ t('filters_all_lenses') }}</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[130px]">
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_from') }}</label>
                     <input type="month" id="dateFrom" value="2018-01" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
                 </div>
-                <div class="flex-1 min-w-[150px]">
+                <div class="flex-1 min-w-[130px]">
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_to') }}</label>
                     <input type="month" id="dateTo" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
                 </div>
@@ -63,8 +75,8 @@
         <!-- Empty State -->
         <div id="noDataState" class="glass rounded-2xl shadow-xl p-12 text-center hidden">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-slate-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-            <h3 class="text-xl font-medium text-slate-300">No Data Available</h3>
-            <p class="text-slate-500 mt-2">No photos found for the selected date range.</p>
+            <h3 class="text-xl font-medium text-slate-300">{{ t('exif_no_data') }}</h3>
+            <p class="text-slate-500 mt-2">{{ t('exif_no_data_desc') }}</p>
         </div>
 
         <!-- Charts Container -->
@@ -134,12 +146,12 @@
             // Focal Length Chart (Vertical Bar)
             focalChart = new Chart(document.getElementById('focalChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: [], datasets: [{ label: 'Photos', data: [], backgroundColor: 'rgba(59, 130, 246, 0.8)', hoverBackgroundColor: 'rgba(59, 130, 246, 1)', borderRadius: 4, barPercentage: 1.0, categoryPercentage: 1.0 }] },
+                data: { labels: [], datasets: [{ label: {{ t('exif_photos_label') | tojson }}, data: [], backgroundColor: 'rgba(59, 130, 246, 0.8)', hoverBackgroundColor: 'rgba(59, 130, 246, 1)', borderRadius: 4, barPercentage: 1.0, categoryPercentage: 1.0 }] },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false }, tooltip: tooltipConfig },
                     scales: { 
-                        x: { grid: { display: false }, title: { display: true, text: 'Focal Length (mm)' } },
+                        x: { grid: { display: false }, title: { display: true, text: {{ t('exif_focal_label') | tojson }} } },
                         y: { grid: gridConfig, beginAtZero: true }
                     }
                 }
@@ -170,7 +182,7 @@
             // Shutter Speed Chart (Horizontal Bar)
             shutterChart = new Chart(document.getElementById('shutterChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: [], datasets: [{ label: 'Photos', data: [], backgroundColor: 'rgba(251, 191, 36, 0.8)', hoverBackgroundColor: 'rgba(251, 191, 36, 1)', borderRadius: 4 }] },
+                data: { labels: [], datasets: [{ label: {{ t('exif_photos_label') | tojson }}, data: [], backgroundColor: 'rgba(251, 191, 36, 0.8)', hoverBackgroundColor: 'rgba(251, 191, 36, 1)', borderRadius: 4 }] },
                 options: {
                     indexAxis: 'y', // Makes it horizontal
                     responsive: true, maintainAspectRatio: false,
@@ -185,7 +197,7 @@
             // ISO Chart (Vertical Bar)
             isoChart = new Chart(document.getElementById('isoChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: [], datasets: [{ label: 'Photos', data: [], backgroundColor: 'rgba(192, 132, 252, 0.8)', hoverBackgroundColor: 'rgba(192, 132, 252, 1)', borderRadius: 4 }] },
+                data: { labels: [], datasets: [{ label: {{ t('exif_photos_label') | tojson }}, data: [], backgroundColor: 'rgba(192, 132, 252, 0.8)', hoverBackgroundColor: 'rgba(192, 132, 252, 1)', borderRadius: 4 }] },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false }, tooltip: tooltipConfig },
@@ -200,10 +212,14 @@
         async function loadData() {
             const dateFrom = document.getElementById('dateFrom').value;
             const dateTo = document.getElementById('dateTo').value;
+            const camera = document.getElementById('cameraFilter').value;
+            const lens = document.getElementById('lensFilter').value;
             
             let url = '/api/exif_metrics?';
             if (dateFrom) url += `start_month=${encodeURIComponent(dateFrom)}&`;
-            if (dateTo) url += `end_month=${encodeURIComponent(dateTo)}`;
+            if (dateTo) url += `end_month=${encodeURIComponent(dateTo)}&`;
+            if (camera) url += `camera=${encodeURIComponent(camera)}&`;
+            if (lens) url += `lens=${encodeURIComponent(lens)}`;
 
             try {
                 const res = await fetch(url);
@@ -244,11 +260,38 @@
             } catch (err) { console.error("Data load failed", err); }
         }
 
+        async function populateFilters() {
+            try {
+                const res = await fetch('/api/filters');
+                const data = await res.json();
+                
+                const cameraSelect = document.getElementById('cameraFilter');
+                const lensSelect = document.getElementById('lensFilter');
+                
+                data.cameras.forEach(cam => {
+                    const opt = document.createElement('option');
+                    opt.value = cam;
+                    opt.textContent = cam;
+                    cameraSelect.appendChild(opt);
+                });
+                
+                data.lenses.forEach(lens => {
+                    const opt = document.createElement('option');
+                    opt.value = lens;
+                    opt.textContent = lens;
+                    lensSelect.appendChild(opt);
+                });
+            } catch (err) { console.error("Filter population failed", err); }
+        }
+
         document.getElementById('dateFrom').addEventListener('change', loadData);
         document.getElementById('dateTo').addEventListener('change', loadData);
+        document.getElementById('cameraFilter').addEventListener('change', loadData);
+        document.getElementById('lensFilter').addEventListener('change', loadData);
 
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
+            populateFilters();
             loadData();
         });
     </script>

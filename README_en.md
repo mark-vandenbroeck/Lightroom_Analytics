@@ -104,8 +104,8 @@ Navigate to **"Lens Config"** in the main menu at the top.
 All charts on the Explore and Edits page will now respect these new groups!
 
 ### 4. Play with the Filters!
-Almost every page (except the dashboard and config) has a **From Month** and **To Month** input box at the top.
-Adjust these dates (e.g., "January 2022 up to and including December 2023"). As soon as you click *outside* the box, all charts on the page (except Pie charts) will refresh on the fly to only show data extracted from that precise timespan. Great for seeing how your gear performed on a specific holiday trip!
+Almost every page (except the dashboard and config) has filters for **Months**, **Camera**, and **Lens** at the top.
+Adjust these filters (e.g., select a specific camera body or lens and a date range). As soon as you change a value, all charts on the page (except Pie charts) will refresh on the fly to show only data corresponding to those filters. Great for seeing how your gear performed on a specific holiday trip or with a specific lens!
 
 ---
 

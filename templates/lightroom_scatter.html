@@ -51,10 +51,22 @@
             
             <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                 <div class="flex-1 min-w-[150px]">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_camera') }}</label>
+                    <select id="cameraFilter" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
+                        <option value="">{{ t('filters_all_cameras') }}</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_lens') }}</label>
+                    <select id="lensFilter" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
+                        <option value="">{{ t('filters_all_lenses') }}</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[130px]">
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_from') }}</label>
                     <input type="month" id="dateFrom" value="2018-01" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
                 </div>
-                <div class="flex-1 min-w-[150px]">
+                <div class="flex-1 min-w-[130px]">
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_to') }}</label>
                     <input type="month" id="dateTo" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
                 </div>
@@ -148,7 +160,7 @@
                                 const size = ctx.raw.r;
                                 let xVal = xFormat ? xFormat(ctx.raw.x) : ctx.raw.x;
                                 let yVal = yFormat ? yFormat(ctx.raw.y) : ctx.raw.y;
-                                return `(${xVal}, ${yVal}) : ${size} photos`;
+                                return `(${xVal}, ${yVal}) : ${size} {{ t('scatter_photos_tooltip') }}`;
                             }
                         }
                     }
@@ -185,19 +197,19 @@
             // Note: We use a custom radius based on bubble charts to represent frequency
             
             // Aperture vs Shutter (x: Aperture, y: Shutter Sec) - Shutter is log scale
-            let config1 = createScatterConfig('Photos', 'rgba(59, 130, 246, 0.5)', 'Aperture (f-stop)', 'Shutter Speed (sec)', 'logarithmic', 'linear', 
+            let config1 = createScatterConfig({{ t('exif_photos_label') | tojson }}, 'rgba(59, 130, 246, 0.5)', {{ t('scatter_aperture_label') | tojson }}, {{ t('scatter_shutter_label') | tojson }}, 'logarithmic', 'linear', 
                                             (val) => 'f/'+val, formatShutter);
             config1.type = 'bubble';
             apertureShutterChart = new Chart(document.getElementById('apertureShutterChart').getContext('2d'), config1);
 
             // Shutter vs ISO (x: Shutter Sec, y: ISO) - Shutter is log scale
-            let config2 = createScatterConfig('Photos', 'rgba(251, 113, 133, 0.5)', 'Shutter Speed (sec)', 'ISO', 'linear', 'logarithmic', 
+            let config2 = createScatterConfig({{ t('exif_photos_label') | tojson }}, 'rgba(251, 113, 133, 0.5)', {{ t('scatter_shutter_label') | tojson }}, {{ t('scatter_iso_label') | tojson }}, 'linear', 'logarithmic', 
                                             formatShutter, (val) => 'ISO '+val);
             config2.type = 'bubble';
             shutterIsoChart = new Chart(document.getElementById('shutterIsoChart').getContext('2d'), config2);
 
             // ISO vs Aperture (x: ISO, y: Aperture)
-            let config3 = createScatterConfig('Photos', 'rgba(45, 212, 191, 0.5)', 'ISO', 'Aperture (f-stop)', 'linear', 'linear', 
+            let config3 = createScatterConfig({{ t('exif_photos_label') | tojson }}, 'rgba(45, 212, 191, 0.5)', {{ t('scatter_iso_label') | tojson }}, {{ t('scatter_aperture_label') | tojson }}, 'linear', 'linear', 
                                             (val) => 'ISO '+val, (val) => 'f/'+val);
             config3.type = 'bubble';
             isoApertureChart = new Chart(document.getElementById('isoApertureChart').getContext('2d'), config3);
@@ -206,10 +218,14 @@
         async function loadData() {
             const dateFrom = document.getElementById('dateFrom').value;
             const dateTo = document.getElementById('dateTo').value;
+            const camera = document.getElementById('cameraFilter').value;
+            const lens = document.getElementById('lensFilter').value;
             
             let url = '/api/scatter_metrics?';
             if (dateFrom) url += `start_month=${encodeURIComponent(dateFrom)}&`;
-            if (dateTo) url += `end_month=${encodeURIComponent(dateTo)}`;
+            if (dateTo) url += `end_month=${encodeURIComponent(dateTo)}&`;
+            if (camera) url += `camera=${encodeURIComponent(camera)}&`;
+            if (lens) url += `lens=${encodeURIComponent(lens)}`;
 
             try {
                 const res = await fetch(url);
@@ -253,11 +269,38 @@
             } catch (err) { console.error("Data load failed", err); }
         }
 
+        async function populateFilters() {
+            try {
+                const res = await fetch('/api/filters');
+                const data = await res.json();
+                
+                const cameraSelect = document.getElementById('cameraFilter');
+                const lensSelect = document.getElementById('lensFilter');
+                
+                data.cameras.forEach(cam => {
+                    const opt = document.createElement('option');
+                    opt.value = cam;
+                    opt.textContent = cam;
+                    cameraSelect.appendChild(opt);
+                });
+                
+                data.lenses.forEach(lens => {
+                    const opt = document.createElement('option');
+                    opt.value = lens;
+                    opt.textContent = lens;
+                    lensSelect.appendChild(opt);
+                });
+            } catch (err) { console.error("Filter population failed", err); }
+        }
+
         document.getElementById('dateFrom').addEventListener('change', loadData);
         document.getElementById('dateTo').addEventListener('change', loadData);
+        document.getElementById('cameraFilter').addEventListener('change', loadData);
+        document.getElementById('lensFilter').addEventListener('change', loadData);
 
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
+            populateFilters();
             loadData();
         });
     </script>

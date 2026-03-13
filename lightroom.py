@@ -399,8 +399,11 @@ def explore_metrics():
 
 @app.route('/api/exif_metrics')
 def exif_metrics():
+    lang = request.cookies.get('lang', 'en')
     start_month = request.args.get('start_month')
     end_month = request.args.get('end_month')
+    camera = request.args.get('camera')
+    lens = request.args.get('lens')
 
     if not os.path.exists(DEST_DB_PATH):
         return jsonify({'error': 'No database found.'}), 404
@@ -418,12 +421,21 @@ def exif_metrics():
         where_clause += " AND strftime('%Y-%m', CaptureTime) <= ?"
         params.append(end_month)
 
+    # Add Camera and Lens filters
+    if camera:
+        where_clause += " AND Camera = ?"
+        params.append(camera)
+    if lens:
+        where_clause += " AND COALESCE(lm.GroupName, lr.Lens) = ?"
+        params.append(lens)
+
     # 1. Focal Length Histogram (Rounded)
     query_focal = f"""
         SELECT 
             CAST(ROUND(FocalLength) AS INTEGER) as focal, 
             COUNT(*) as count 
-        FROM {DEST_TABLE_NAME}
+        FROM {DEST_TABLE_NAME} lr
+        LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
         {where_clause}
         GROUP BY focal
         ORDER BY focal ASC
@@ -441,28 +453,29 @@ def exif_metrics():
                 ELSE '>= f/11'
             END as aperture_bucket,
             COUNT(*) as count
-        FROM {DEST_TABLE_NAME}
+        FROM {DEST_TABLE_NAME} lr
+        LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
         {where_clause} AND Aperture IS NOT NULL
         GROUP BY aperture_bucket
         ORDER BY MIN(Aperture) ASC
     """
 
     # 3. Shutter Speed (Bucketed)
-    # APEX Value to Seconds formula: Time (in seconds) = 1 / (2^ShutterSpeed)
     query_shutter = f"""
         WITH ConvertedShutter AS (
             SELECT 
                 1.0 / POWER(2, ShutterSpeed) AS sec
-            FROM {DEST_TABLE_NAME}
+            FROM {DEST_TABLE_NAME} lr
+            LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
             {where_clause} AND ShutterSpeed IS NOT NULL
         )
         SELECT 
             CASE 
-                WHEN sec <= 0.001 THEN 'Action (< 1/1000s)'
-                WHEN sec > 0.001 AND sec <= 0.01 THEN 'Fast (1/1000s - 1/100s)'
-                WHEN sec > 0.01 AND sec <= 0.1 THEN 'Handheld (1/100s - 1/10s)'
-                WHEN sec > 0.1 AND sec <= 1.0 THEN 'Slow (1/10s - 1s)'
-                ELSE 'Long Exposure (> 1s)'
+                WHEN sec <= 0.001 THEN '{TRANSLATIONS["shutter_action"].get(lang, "Action (< 1/1000s)")}'
+                WHEN sec > 0.001 AND sec <= 0.01 THEN '{TRANSLATIONS["shutter_fast"].get(lang, "Fast (1/1000s - 1/100s)")}'
+                WHEN sec > 0.01 AND sec <= 0.1 THEN '{TRANSLATIONS["shutter_handheld"].get(lang, "Handheld (1/100s - 1/10s)")}'
+                WHEN sec > 0.1 AND sec <= 1.0 THEN '{TRANSLATIONS["shutter_slow"].get(lang, "Slow (1/10s - 1s)")}'
+                ELSE '{TRANSLATIONS["shutter_long"].get(lang, "Long Exposure (> 1s)")}'
             END as shutter_bucket,
             COUNT(*) as count,
             MIN(sec) as sort_val
@@ -476,7 +489,8 @@ def exif_metrics():
         SELECT 
             CAST(ROUND(ISO) AS INTEGER) as iso_val, 
             COUNT(*) as count 
-        FROM {DEST_TABLE_NAME}
+        FROM {DEST_TABLE_NAME} lr
+        LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
         {where_clause} AND ISO IS NOT NULL AND ISO <= 8000
         GROUP BY iso_val
         ORDER BY iso_val ASC
@@ -517,6 +531,8 @@ def exif_metrics():
 def scatter_metrics():
     start_month = request.args.get('start_month')
     end_month = request.args.get('end_month')
+    camera = request.args.get('camera')
+    lens = request.args.get('lens')
 
     if not os.path.exists(DEST_DB_PATH):
         return jsonify({'error': 'No database found.'}), 404
@@ -533,6 +549,13 @@ def scatter_metrics():
         where_clause += " AND strftime('%Y-%m', CaptureTime) <= ?"
         params.append(end_month)
 
+    if camera:
+        where_clause += " AND Camera = ?"
+        params.append(camera)
+    if lens:
+        where_clause += " AND COALESCE(lm.GroupName, lr.Lens) = ?"
+        params.append(lens)
+
     # Note: ShutterSpeed is APEX, so 1.0 / POWER(2, ShutterSpeed) gives seconds
     base_query = f"""
         WITH BaseData AS (
@@ -540,7 +563,8 @@ def scatter_metrics():
                 ROUND(Aperture, 1) as aperture,
                 1.0 / POWER(2, ShutterSpeed) as shutter_sec,
                 CAST(ROUND(ISO) AS INTEGER) as iso_val
-            FROM {DEST_TABLE_NAME}
+            FROM {DEST_TABLE_NAME} lr
+            LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
             {where_clause} 
             AND Aperture IS NOT NULL 
             AND ShutterSpeed IS NOT NULL 
@@ -598,8 +622,11 @@ def scatter_metrics():
 
 @app.route('/api/hitrate_metrics')
 def hitrate_metrics():
+    lang = request.cookies.get('lang', 'en')
     start_month = request.args.get('start_month')
     end_month = request.args.get('end_month')
+    camera = request.args.get('camera')
+    lens = request.args.get('lens')
 
     if not os.path.exists(DEST_DB_PATH):
         return jsonify({'error': 'No database found.'}), 404
@@ -616,6 +643,13 @@ def hitrate_metrics():
         where_clause += " AND strftime('%Y-%m', CaptureTime) <= ?"
         params.append(end_month)
 
+    if camera:
+        where_clause += " AND Camera = ?"
+        params.append(camera)
+    if lens:
+        where_clause += " AND COALESCE(lm.GroupName, lr.Lens) = ?"
+        params.append(lens)
+
     # Note: ShutterSpeed is APEX, so 1.0 / POWER(2, ShutterSpeed) gives seconds
     
     # 1. Focal Length Hit Rate
@@ -624,7 +658,8 @@ def hitrate_metrics():
             CAST(ROUND(FocalLength) AS INTEGER) as label, 
             COUNT(*) as total_photos,
             SUM(CASE WHEN pick = 1 THEN 1 ELSE 0 END) as pick_count
-        FROM {DEST_TABLE_NAME}
+        FROM {DEST_TABLE_NAME} lr
+        LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
         {where_clause}
         GROUP BY label
         HAVING total_photos >= 10
@@ -645,7 +680,8 @@ def hitrate_metrics():
             MIN(Aperture) as sort_val,
             COUNT(*) as total_photos,
             SUM(CASE WHEN pick = 1 THEN 1 ELSE 0 END) as pick_count
-        FROM {DEST_TABLE_NAME}
+        FROM {DEST_TABLE_NAME} lr
+        LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
         {where_clause}
         GROUP BY label_text
         HAVING total_photos >= 10
@@ -658,16 +694,17 @@ def hitrate_metrics():
             SELECT 
                 1.0 / POWER(2, ShutterSpeed) AS sec,
                 pick
-            FROM {DEST_TABLE_NAME}
+            FROM {DEST_TABLE_NAME} lr
+            LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
             {where_clause}
         )
         SELECT 
             CASE 
-                WHEN sec <= 0.001 THEN 'Action (< 1/1000s)'
-                WHEN sec > 0.001 AND sec <= 0.01 THEN 'Fast (1/1000s - 1/100s)'
-                WHEN sec > 0.01 AND sec <= 0.1 THEN 'Handheld (1/100s - 1/10s)'
-                WHEN sec > 0.1 AND sec <= 1.0 THEN 'Slow (1/10s - 1s)'
-                ELSE 'Long Exposure (> 1s)'
+                WHEN sec <= 0.001 THEN '{TRANSLATIONS["shutter_action"].get(lang, "Action (< 1/1000s)")}'
+                WHEN sec > 0.001 AND sec <= 0.01 THEN '{TRANSLATIONS["shutter_fast"].get(lang, "Fast (1/1000s - 1/100s)")}'
+                WHEN sec > 0.01 AND sec <= 0.1 THEN '{TRANSLATIONS["shutter_handheld"].get(lang, "Handheld (1/100s - 1/10s)")}'
+                WHEN sec > 0.1 AND sec <= 1.0 THEN '{TRANSLATIONS["shutter_slow"].get(lang, "Slow (1/10s - 1s)")}'
+                ELSE '{TRANSLATIONS["shutter_long"].get(lang, "Long Exposure (> 1s)")}'
             END as label_text,
             MIN(sec) as sort_val,
             COUNT(*) as total_photos,
@@ -708,6 +745,8 @@ def hitrate_metrics():
 def edits_metrics():
     start_month = request.args.get('start_month')
     end_month = request.args.get('end_month')
+    camera = request.args.get('camera')
+    lens = request.args.get('lens')
 
     if not os.path.exists(DEST_DB_PATH):
         return jsonify({'error': 'No database found.'}), 404
@@ -723,13 +762,21 @@ def edits_metrics():
     if end_month:
         where_clause += " AND strftime('%Y-%m', CaptureTime) <= ?"
         params.append(end_month)
+
+    if camera:
+        where_clause += " AND Camera = ?"
+        params.append(camera)
+    if lens:
+        where_clause += " AND COALESCE(lm.GroupName, lr.Lens) = ?"
+        params.append(lens)
         
     # 1. Ratings Distribution
     query_ratings = f"""
         SELECT 
             Rating as rating_val,
             COUNT(*) as count
-        FROM {DEST_TABLE_NAME}
+        FROM {DEST_TABLE_NAME} lr
+        LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
         {where_clause}
         GROUP BY rating_val
         ORDER BY rating_val ASC
@@ -742,7 +789,7 @@ def edits_metrics():
             AVG(lr.EditCount) AS avg_edits
         FROM {DEST_TABLE_NAME} lr
         LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
-        {where_clause.replace("WHERE", "WHERE lr.") if where_clause != "WHERE " else "WHERE 1=1"}
+        {where_clause}
         GROUP BY label_text
         HAVING COUNT(*) >= 20
         ORDER BY avg_edits DESC
@@ -754,7 +801,8 @@ def edits_metrics():
         SELECT 
             Camera AS label_text,
             AVG(EditCount) AS avg_edits
-        FROM {DEST_TABLE_NAME}
+        FROM {DEST_TABLE_NAME} lr
+        LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
         {where_clause}
         GROUP BY label_text
         HAVING COUNT(*) >= 20

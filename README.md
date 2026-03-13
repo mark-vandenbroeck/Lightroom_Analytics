@@ -104,8 +104,8 @@ Navigeer bovenin het hoofdmenu naar **"Lens Config"**.
 Alle grafieken op de Explore en Edits pagina respecteren nu deze vernieuwde groepen!
 
 ### 4. Spelen met de Filters!
-Bijna elke pagina (behalve het dashboard en config) heeft bovenaan een **From Month** en **To Month** invoervak.
-Pas deze datums aan (bijv: "Januari 2022 tot en met December 2023"). Zodra je *buiten* het vakje klikt verversen alle (behalve de Pie-) grafieken op de pagina on the fly naar enkel data gehaald uit die precieze tijdsspanne. Mooi om per reisvakantie te zien hoe de apparatuur in de smaak viel!
+Bijna elke pagina (behalve het dashboard en config) heeft bovenaan filters voor **Maanden**, **Camera** en **Lens**.
+Pas deze filters aan (bijv: selecteer een specifieke body of lens en een datumbereik). Zodra je een waarde wijzigt verversen alle (behalve de Pie-) grafieken op de pagina on the fly naar enkel data gehaald uit die filters. Mooi om per reisvakantie of per specifiek objectief te zien hoe de apparatuur in de smaak viel!
 
 ---
 
