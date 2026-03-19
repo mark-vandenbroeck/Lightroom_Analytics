@@ -8,61 +8,11 @@ Press CTRL+C to quit
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 126-526-228
-127.0.0.1 - - [19/Mar/2026 08:28:07] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:28:07] "GET /static/favicon.png HTTP/1.1" 304 -
-127.0.0.1 - - [19/Mar/2026 08:28:16] "GET /api/browse HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:28:19] "POST /api/import HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:28:19] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:28:19] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:28:35] "GET /set_language/en HTTP/1.1" 302 -
-127.0.0.1 - - [19/Mar/2026 08:28:35] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:28:45] "GET /api/browse HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:28:48] "POST /api/import HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:28:48] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:28:48] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:30:10] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:31:12] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:31:41] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:32:00] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:32:28] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:32:37] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:32:37] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:34:02] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:38:08] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:38:09] "GET /static/favicon.png HTTP/1.1" 304 -
-127.0.0.1 - - [19/Mar/2026 08:38:09] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:38:09] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:38:50] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:38:50] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 08:38:51] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:01:59] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:02:00] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:02:00] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:02:47] "GET /api/browse HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:02:50] "POST /api/import HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:02:50] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:02:50] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:03:13] "GET /api/browse HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:03:16] "POST /api/import HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:03:16] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:03:16] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:04:15] "GET /api/browse HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:04:19] "POST /api/import HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:04:19] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:04:19] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:10:18] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:10:18] "GET /static/favicon.png HTTP/1.1" 304 -
-127.0.0.1 - - [19/Mar/2026 09:10:18] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:10:19] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:13:00] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:13:00] "GET /static/favicon.png HTTP/1.1" 304 -
-127.0.0.1 - - [19/Mar/2026 09:13:00] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:13:00] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:13:08] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:13:08] "GET /static/favicon.png HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:13:08] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:13:08] "GET /api/keyword_metrics HTTP/1.1" 200 -
- * Detected change in '/Users/mark/Python/Lightroom/lightroom.py', reloading
- * Restarting with stat
- * Debugger is active!
- * Debugger PIN: 126-526-228
+127.0.0.1 - - [19/Mar/2026 09:16:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:16:08] "GET /static/favicon.png HTTP/1.1" 304 -
+127.0.0.1 - - [19/Mar/2026 09:16:08] "GET /api/metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:16:09] "GET /api/keyword_metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:16:17] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:16:17] "GET /static/favicon.png HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:16:17] "GET /api/metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:16:17] "GET /api/keyword_metrics HTTP/1.1" 200 -
