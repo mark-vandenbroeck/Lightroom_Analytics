@@ -54,3 +54,15 @@ Press CTRL+C to quit
 127.0.0.1 - - [19/Mar/2026 09:10:18] "GET /static/favicon.png HTTP/1.1" 304 -
 127.0.0.1 - - [19/Mar/2026 09:10:18] "GET /api/metrics HTTP/1.1" 200 -
 127.0.0.1 - - [19/Mar/2026 09:10:19] "GET /api/keyword_metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:13:00] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:13:00] "GET /static/favicon.png HTTP/1.1" 304 -
+127.0.0.1 - - [19/Mar/2026 09:13:00] "GET /api/metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:13:00] "GET /api/keyword_metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:13:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:13:08] "GET /static/favicon.png HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:13:08] "GET /api/metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:13:08] "GET /api/keyword_metrics HTTP/1.1" 200 -
+ * Detected change in '/Users/mark/Python/Lightroom/lightroom.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 126-526-228

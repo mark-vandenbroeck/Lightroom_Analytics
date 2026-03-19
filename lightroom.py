@@ -993,8 +993,8 @@ def keyword_metrics():
                 keyword_counts[kw] += 1
 
     # Format for word cloud: [{text: "Nature", weight: 45}, ...]
-    # Top 100 keywords to not overload the chart
-    cloud_data = [{'text': k, 'weight': v} for k, v in keyword_counts.most_common(100)]
+    # Top 45 keywords to not overload the chart
+    cloud_data = [{'text': k, 'weight': v} for k, v in keyword_counts.most_common(45)]
     return jsonify(cloud_data)
 
 
