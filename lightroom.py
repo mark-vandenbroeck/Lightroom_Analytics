@@ -214,6 +214,9 @@ def import_catalog():
         return jsonify({'error': 'No data found with the given query.'}), 404
 
     try:
+        # Ensure all required tables (like LensMappings) exist before importing
+        init_db()
+        
         # Save to local destination database without destroying LensMappings
         conn_dest = get_db_connection()
         # Accelerate heavy batch inserts locally too
