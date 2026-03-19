@@ -8,11 +8,7 @@ Press CTRL+C to quit
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 126-526-228
-127.0.0.1 - - [19/Mar/2026 09:16:08] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:16:08] "GET /static/favicon.png HTTP/1.1" 304 -
-127.0.0.1 - - [19/Mar/2026 09:16:08] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:16:09] "GET /api/keyword_metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:16:17] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:16:17] "GET /static/favicon.png HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:16:17] "GET /api/metrics HTTP/1.1" 200 -
-127.0.0.1 - - [19/Mar/2026 09:16:17] "GET /api/keyword_metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:21:02] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:21:02] "GET /static/favicon.png HTTP/1.1" 304 -
+127.0.0.1 - - [19/Mar/2026 09:21:03] "GET /api/metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:21:03] "GET /api/keyword_metrics HTTP/1.1" 200 -

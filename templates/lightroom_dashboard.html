@@ -9,7 +9,7 @@
     <!-- Use Tailwind CSS for rich aesthetics and modern web design patterns -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/chartjs-chart-wordcloud@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -241,51 +241,31 @@
                     const kRes = await fetch('/api/keyword_metrics');
                     const kData = await kRes.json();
                     if (kData && kData.length > 0) {
-                        const ctx3 = document.getElementById('keywordsChart').getContext('2d');
-                        if (keywordsChart) { keywordsChart.destroy(); }
-                        keywordsChart = new Chart(ctx3, {
-                            type: 'wordCloud',
-                            data: {
-                                labels: kData.map(d => d.text),
-                                datasets: [{
-                                    label: 'Keywords',
-                                    data: kData.map(d => Math.log2(d.weight) * 10), // Logarithmic scale for safe visual rendering
-                                    rawWeights: kData.map(d => d.weight), // Keep original numbers for the tooltip
-                                    color: function() {
-                                        const colors = ['#60a5fa', '#34d399', '#fbbf24', '#c084fc', '#f472b6', '#94a3b8'];
-                                        return colors[Math.floor(Math.random() * colors.length)];
-                                    }
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                elements: {
-                                    word: {
-                                        minSize: 14,
-                                        maxSize: 60,
-                                        minRotation: 0,
-                                        maxRotation: 0,
-                                        padding: 4,
-                                        fit: false
-                                    }
-                                },
-                                plugins: {
-                                    wordCloud: { fit: false },
-                                    legend: { display: false },
-                                    tooltip: { 
-                                        backgroundColor: 'rgba(15, 23, 42, 0.9)', 
-                                        titleColor: '#fff', 
-                                        bodyColor: '#cbd5e1', 
-                                        cornerRadius: 8,
-                                        callbacks: {
-                                            label: function(context) {
-                                                // Retrieve our unscaled original weight
-                                                const rawWeight = context.dataset.rawWeights[context.dataIndex];
-                                                return ' ' + rawWeight + ' photos';
-                                            }
-                                        }
-                                    }
+                        const canvas = document.getElementById('keywordsChart');
+                        
+                        // Set internal resolution of the canvas so WordCloud2 can draw crisply
+                        const rect = canvas.parentElement.getBoundingClientRect();
+                        canvas.width = rect.width || 800;
+                        canvas.height = rect.height || 300;
+
+                        const colors = ['#60a5fa', '#34d399', '#fbbf24', '#c084fc', '#f472b6', '#94a3b8'];
+                        
+                        WordCloud(canvas, {
+                            list: kData.map(d => [d.text, Math.max(14, Math.log2(d.weight) * 6), d.weight]), // [word, size, rawData]
+                            fontFamily: "'Inter', sans-serif",
+                            weightFactor: 1, 
+                            color: function() { return colors[Math.floor(Math.random() * colors.length)]; },
+                            rotateRatio: 0, // No rotation
+                            backgroundColor: 'transparent',
+                            shrinkToFit: true, // Forces drawing to scale down if it exceeds boundaries
+                            drawOutOfBound: false,
+                            hover: function(item) {
+                                if (item) {
+                                    canvas.title = item[0] + ": " + item[2] + " photos";
+                                    canvas.style.cursor = 'pointer';
+                                } else {
+                                    canvas.title = "";
+                                    canvas.style.cursor = 'default';
                                 }
                             }
                         });
