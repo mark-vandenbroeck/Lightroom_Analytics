@@ -84,3 +84,13 @@ Press CTRL+C to quit
 127.0.0.1 - - [19/Mar/2026 08:09:51] "GET /api/scatter_metrics?start_month=2018-01& HTTP/1.1" 200 -
 127.0.0.1 - - [19/Mar/2026 08:10:05] "GET / HTTP/1.1" 200 -
 127.0.0.1 - - [19/Mar/2026 08:10:05] "GET /api/metrics HTTP/1.1" 200 -
+ * Detected change in '/Users/mark/Python/Lightroom/lightroom.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 126-526-228
+127.0.0.1 - - [19/Mar/2026 08:25:31] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 08:25:32] "GET /static/favicon.png HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 08:25:43] "GET /api/browse HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 08:25:46] "POST /api/import HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 08:25:46] "GET /api/metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 08:25:46] "GET /api/keyword_metrics HTTP/1.1" 200 -

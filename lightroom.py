@@ -69,6 +69,14 @@ WITH ModCount AS (
     AND Adobe_libraryImageDevelopHistoryStep.name NOT LIKE 'Import%'
     AND Adobe_libraryImageDevelopHistoryStep.name NOT LIKE 'Print%'
     GROUP BY image
+),
+KeywordList AS (
+    SELECT 
+        image,
+        GROUP_CONCAT(AgLibraryKeyword.name, ',') AS Keywords
+    FROM AgLibraryKeywordImage
+    JOIN AgLibraryKeyword ON AgLibraryKeyword.id_local = AgLibraryKeywordImage.tag
+    GROUP BY image
 )
 SELECT
     AgLibraryRootFolder.name AS RootFolderName,
@@ -87,7 +95,8 @@ SELECT
     COALESCE(AgInternedExifCameraModel.value,"Unknown camera") AS Camera,
     COALESCE(AgInternedExifLens.value,"Unknown lens") AS Lens,
     Adobe_images.pick,
-    COALESCE(ModCount.EditCount,0) AS EditCount -- remove this to avoid depedency on ModCount view
+    COALESCE(ModCount.EditCount,0) AS EditCount,
+    COALESCE(KeywordList.Keywords, '') AS Keywords
 FROM
     AgLibraryFile -- every image in catalog has an entry in this table
     LEFT JOIN AgLibraryFolder ON AgLibraryFolder.id_local=AgLibraryFile.folder
@@ -96,7 +105,8 @@ FROM
     LEFT JOIN AgHarvestedExifMetadata ON AgHarvestedExifMetadata.image = Adobe_images.id_local
     LEFT JOIN AgInternedExifCameraModel ON AgInternedExifCameraModel.id_local = AgHarvestedExifMetadata.cameraModelRef
     LEFT JOIN AgInternedExifLens ON AgInternedExifLens.id_local = AgHarvestedExifMetadata.lensRef
-    LEFT JOIN ModCount ON ModCount.image = Adobe_images.id_local -- remove this to avoid depedency on ModCount view
+    LEFT JOIN ModCount ON ModCount.image = Adobe_images.id_local
+    LEFT JOIN KeywordList ON KeywordList.image = Adobe_images.id_local
 """
 
 def get_sqlite_type(value):
@@ -956,6 +966,36 @@ def lens_profile_metrics():
         return jsonify({'error': str(e)}), 500
     finally:
         conn.close()
+
+
+@app.route('/api/keyword_metrics')
+def keyword_metrics():
+    """Returns aggregated keyword counts for word cloud."""
+    if not os.path.exists(DEST_DB_PATH):
+        return jsonify([])
+
+    conn = get_db_connection()
+    try:
+        # We need to read all Keywords columns that are not empty
+        rows = conn.execute(f"SELECT Keywords FROM {DEST_TABLE_NAME} WHERE Keywords IS NOT NULL AND Keywords != ''").fetchall()
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        conn.close()
+
+    from collections import Counter
+    keyword_counts = Counter()
+    for row in rows:
+        # Keywords are comma-separated string from GROUP_CONCAT
+        kws = [k.strip() for k in row['Keywords'].split(',')]
+        for kw in kws:
+            if kw:
+                keyword_counts[kw] += 1
+
+    # Format for word cloud: [{text: "Nature", weight: 45}, ...]
+    # Top 100 keywords to not overload the chart
+    cloud_data = [{'text': k, 'weight': v} for k, v in keyword_counts.most_common(100)]
+    return jsonify(cloud_data)
 
 
 if __name__ == '__main__':
