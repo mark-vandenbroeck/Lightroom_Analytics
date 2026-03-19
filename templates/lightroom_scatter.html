@@ -199,7 +199,7 @@
             
             // Aperture vs Shutter (x: Aperture, y: Shutter Sec) - Shutter is log scale
             let config1 = createScatterConfig({{ t('exif_photos_label') | tojson }}, 'rgba(59, 130, 246, 0.5)', {{ t('scatter_aperture_label') | tojson }}, {{ t('scatter_shutter_label') | tojson }}, 'logarithmic', 'linear', 
-                                            (val) => 'f/'+val, formatShutter);
+                                            (val) => 'f/' + Number(val).toFixed(1), formatShutter);
             config1.type = 'bubble';
             apertureShutterChart = new Chart(document.getElementById('apertureShutterChart').getContext('2d'), config1);
 
@@ -211,7 +211,7 @@
 
             // ISO vs Aperture (x: ISO, y: Aperture)
             let config3 = createScatterConfig({{ t('exif_photos_label') | tojson }}, 'rgba(45, 212, 191, 0.5)', {{ t('scatter_iso_label') | tojson }}, {{ t('scatter_aperture_label') | tojson }}, 'linear', 'linear', 
-                                            (val) => 'ISO '+val, (val) => 'f/'+val);
+                                            (val) => 'ISO '+val, (val) => 'f/' + Number(val).toFixed(1));
             config3.type = 'bubble';
             isoApertureChart = new Chart(document.getElementById('isoApertureChart').getContext('2d'), config3);
         }
