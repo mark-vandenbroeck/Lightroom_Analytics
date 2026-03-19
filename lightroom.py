@@ -183,12 +183,11 @@ def import_catalog():
     if not source_db_path or not os.path.exists(source_db_path):
         return jsonify({'error': 'Invalid or non-existent file path: ' + str(source_db_path)}), 400
 
-    # Read from sourceLRCAT in read-only mode using URI
+    # Read from sourceLRCAT
     try:
-        db_uri = Path(source_db_path).as_uri() + '?mode=ro'
-        conn_src = sqlite3.connect(db_uri, uri=True)
+        conn_src = sqlite3.connect(source_db_path)
     except Exception as e:
-        return jsonify({'error': f'Failed to open LRCAT file in read-only mode: {str(e)}'}), 500
+        return jsonify({'error': f'Failed to open LRCAT file: {str(e)}'}), 500
 
     cursor_src = conn_src.cursor()
     try:
@@ -960,5 +959,5 @@ def lens_profile_metrics():
 
 
 if __name__ == '__main__':
-    host = '0.0.0.0' if os.environ.get('IN_DOCKER') else '127.0.0.1'
+    host = '0.0.0.0'
     app.run(debug=True, host=host, port=PORT)

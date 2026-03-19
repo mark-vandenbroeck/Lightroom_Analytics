@@ -16,6 +16,7 @@ Stop making decisions for your next gear purchase based on gut feeling, but base
 *   **Lens Profiles (Deep Zoom):** Pick a lens from the dropdown and view its unique profile. Do you constantly fall back on the extremes of your zoom range when zooming? And which aperture do you press most often for this specific lens?
 *   **Lens Config:** Lightroom often recognizes lenses under cryptic names or varying text strings over the years. On this page, you can easily 'group' or rename lenses (e.g., "My 50mm Prime") so that all your charts stay clean and accurate.
 *   **Bilingual Interface:** Seamlessly switch between an English (🇬🇧 EN) and Dutch (🇳🇱 NL) interface using the toggle at the top to match your preference!
+*   **Dark Mode Ready:** The interface, including date pickers, works seamlessly with 'Dark Mode' in Chromium-based browsers (Chrome, Edge, Brave).
 
 ---
 
