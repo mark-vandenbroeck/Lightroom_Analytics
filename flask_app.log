@@ -18,3 +18,36 @@ Press CTRL+C to quit
 127.0.0.1 - - [19/Mar/2026 09:31:14] "GET /api/metrics HTTP/1.1" 200 -
 127.0.0.1 - - [19/Mar/2026 09:31:14] "GET /api/keyword_metrics?only_picks=false HTTP/1.1" 200 -
 127.0.0.1 - - [19/Mar/2026 09:31:19] "GET /api/keyword_metrics?only_picks=true HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:34:57] "GET /explore HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:34:57] "GET /api/filters HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:34:57] "GET /api/explore_metrics?start_month=2028-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:35:08] "GET /api/explore_metrics?start_month=2028-02& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:35:20] "GET /api/explore_metrics?camera=Canon%20EOS%20R7&start_month=2028-02& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:35:43] "GET /api/explore_metrics?camera=Canon%20EOS%20R7&start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:35:52] "GET /api/explore_metrics?start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:36:04] "GET /api/explore_metrics?lens=12-24mm&start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:36:15] "GET /api/explore_metrics?lens=EF50mm%20f/1.8&start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:36:23] "GET /api/explore_metrics?lens=iPhone%2011%20back%20camera&start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:36:32] "GET /api/explore_metrics?lens=18-50mm%20F2.8%20DC%20DN&start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:36:36] "GET /exif HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:36:36] "GET /api/filters HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:36:37] "GET /api/exif_metrics?start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:36:53] "GET /api/exif_metrics?start_month=2018-01&lens=12-24mm HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:36:57] "GET /api/exif_metrics?start_month=2018-01&lens=18-50mm%20F2.8%20DC%20DN HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:02] "GET /api/exif_metrics?start_month=2018-01&lens=EF-S17-55mm%20f/2.8%20IS%20USM HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:07] "GET /api/exif_metrics?start_month=2018-01&lens=EF-S18-135mm%20f/3.5-5.6%20IS%20STM HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:10] "GET /api/exif_metrics?start_month=2018-01&lens=EF-S18-55mm%20f/3.5-5.6 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:13] "GET /api/exif_metrics?start_month=2018-01&lens=EF24-105mm%20f/4L%20IS%20USM HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:18] "GET /api/exif_metrics?start_month=2018-01&lens=EF70-200mm%20f/2.8L%20IS%20II%20USM HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:31] "GET /api/exif_metrics?start_month=2018-01&lens=TAMRON%2055-200mm%20F/4-5.6%20DiII%20A15E HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:38] "GET /api/exif_metrics?start_month=2018-01&lens=Tokina%20AT-X%20124%20PRO%20DX%2012-24mm HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:44] "GET /api/exif_metrics?start_month=2018-01&lens=Unknown%20lens HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:48] "GET /scatter HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:48] "GET /api/filters HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:48] "GET /api/scatter_metrics?start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:37:56] "GET /api/scatter_metrics?start_month=2018-01&lens=EF70-200mm%20f/2.8L%20IS%20II%20USM HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:38:18] "GET /api/scatter_metrics?start_month=2018-01&lens=Tokina%20AT-X%20124%20PRO%20DX%2012-24mm HTTP/1.1" 200 -
+ * Detected change in '/Users/mark/Python/Lightroom/lightroom.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 126-526-228

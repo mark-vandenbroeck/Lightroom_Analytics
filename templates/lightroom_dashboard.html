@@ -43,14 +43,45 @@
         </nav>
 
         <!-- Header -->
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center glass p-6 rounded-2xl shadow-xl gap-4">
-            <div>
-                <h1 class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tight">
-                    {{ t('dashboard_title') }}
-                </h1>
-                <p class="text-slate-400 mt-1 text-sm">{{ t('dashboard_subtitle') }}</p>
+        <header class="flex flex-col xl:flex-row justify-between items-start xl:items-center glass p-6 rounded-2xl shadow-xl gap-6">
+            <div class="flex justify-between w-full xl:w-auto items-center">
+                <div>
+                    <h1 class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tight">
+                        {{ t('dashboard_title') }}
+                    </h1>
+                    <p class="text-slate-400 mt-1 text-sm">{{ t('dashboard_subtitle') }}</p>
+                </div>
+                <!-- Small screen import button -->
+                <button onclick="openModal()" class="xl:hidden px-4 py-2 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 font-semibold shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all text-white text-sm">
+                    {{ t('dashboard_import_btn') }}
+                </button>
             </div>
-            <button onclick="openModal()" class="px-6 py-3 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 font-semibold shadow-[0_0_15px_rgba(79,70,229,0.4)] hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] transition-all flex items-center gap-2 text-white">
+            
+            <div class="flex flex-col sm:flex-row gap-4 w-full xl:w-auto">
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_camera') }}</label>
+                    <select id="cameraFilter" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
+                        <option value="">{{ t('filters_all_cameras') }}</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_lens') }}</label>
+                    <select id="lensFilter" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
+                        <option value="">{{ t('filters_all_lenses') }}</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[130px]">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_from') }}</label>
+                    <input type="month" id="dateFrom" value="2018-01" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
+                </div>
+                <div class="flex-1 min-w-[130px]">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{{ t('filters_to') }}</label>
+                    <input type="month" id="dateTo" class="w-full px-4 py-2 bg-slate-800/80 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-200 cursor-pointer hover:border-slate-500 transition-colors">
+                </div>
+            </div>
+
+            <!-- Large screen import button -->
+            <button onclick="openModal()" class="hidden xl:flex px-6 py-3 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 font-semibold shadow-[0_0_15px_rgba(79,70,229,0.4)] hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] transition-all items-center gap-2 text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 {{ t('dashboard_import_btn') }}
             </button>
@@ -217,10 +248,48 @@
             });
         }
 
+        async function populateFilters() {
+            try {
+                const res = await fetch('/api/filters');
+                const data = await res.json();
+                
+                const cameraSelect = document.getElementById('cameraFilter');
+                const lensSelect = document.getElementById('lensFilter');
+                
+                data.cameras.forEach(cam => {
+                    const opt = document.createElement('option');
+                    opt.value = cam;
+                    opt.textContent = cam;
+                    cameraSelect.appendChild(opt);
+                });
+                
+                data.lenses.forEach(lens => {
+                    const opt = document.createElement('option');
+                    opt.value = lens;
+                    opt.textContent = lens;
+                    lensSelect.appendChild(opt);
+                });
+            } catch (err) { console.error("Filter population failed", err); }
+        }
+
+        function getFilterQueryArgs() {
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            const camera = document.getElementById('cameraFilter').value;
+            const lens = document.getElementById('lensFilter').value;
+            let query = '';
+            if (dateFrom) query += `&start_month=${encodeURIComponent(dateFrom)}`;
+            if (dateTo) query += `&end_month=${encodeURIComponent(dateTo)}`;
+            if (camera) query += `&camera=${encodeURIComponent(camera)}`;
+            if (lens) query += `&lens=${encodeURIComponent(lens)}`;
+            return query;
+        }
+
         async function loadKeywordMetrics() {
             try {
                 const onlyPicks = document.getElementById('keywordsOnlyPicks').checked;
-                const kRes = await fetch(`/api/keyword_metrics?only_picks=${onlyPicks}`);
+                const filterArgs = getFilterQueryArgs();
+                const kRes = await fetch(`/api/keyword_metrics?only_picks=${onlyPicks}${filterArgs}`);
                 const kData = await kRes.json();
                 
                 const canvas = document.getElementById('keywordsChart');
@@ -264,7 +333,8 @@
 
         async function loadMetrics() {
             try {
-                const res = await fetch('/api/metrics');
+                const filterArgs = getFilterQueryArgs();
+                const res = await fetch(`/api/metrics?${filterArgs.substring(1)}`);
                 const data = await res.json();
                 
                 const chartsContainer = document.getElementById('chartsContainer');
@@ -373,9 +443,15 @@
             }
         });
 
+        document.getElementById('dateFrom').addEventListener('change', loadMetrics);
+        document.getElementById('dateTo').addEventListener('change', loadMetrics);
+        document.getElementById('cameraFilter').addEventListener('change', loadMetrics);
+        document.getElementById('lensFilter').addEventListener('change', loadMetrics);
+
         // Init
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
+            populateFilters();
             loadMetrics();
             document.getElementById('keywordsOnlyPicks').addEventListener('change', loadKeywordMetrics);
         });

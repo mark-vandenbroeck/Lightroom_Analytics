@@ -244,19 +244,41 @@ def import_catalog():
 
 @app.route('/api/metrics')
 def metrics():
+    start_month = request.args.get('start_month')
+    end_month = request.args.get('end_month')
+    camera = request.args.get('camera')
+    lens = request.args.get('lens')
+
     if not os.path.exists(DEST_DB_PATH):
         return jsonify({'error': 'No database found. Please import a catalog first.'}), 404
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    where_clause = "WHERE CaptureTime IS NOT NULL"
+    params = []
+    
+    if start_month:
+        where_clause += " AND strftime('%Y-%m', CaptureTime) >= ?"
+        params.append(start_month)
+    if end_month:
+        where_clause += " AND strftime('%Y-%m', CaptureTime) <= ?"
+        params.append(end_month)
+    if camera:
+        where_clause += " AND Camera = ?"
+        params.append(camera)
+    if lens:
+        where_clause += " AND COALESCE(lm.GroupName, lr.Lens) = ?"
+        params.append(lens)
+
     query = f"""
         SELECT 
             strftime('%Y-%m', CaptureTime) as month,
             COUNT(*) as total_photos,
             SUM(CASE WHEN pick = 1 THEN 1 ELSE 0 END) as pick_count
-        FROM {DEST_TABLE_NAME}
-        WHERE CaptureTime IS NOT NULL
+        FROM {DEST_TABLE_NAME} lr
+        LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName
+        {where_clause}
         GROUP BY month
         ORDER BY month ASC
     """
@@ -972,17 +994,41 @@ def lens_profile_metrics():
 def keyword_metrics():
     """Returns aggregated keyword counts for word cloud."""
     only_picks = request.args.get('only_picks', 'false').lower() == 'true'
+    start_month = request.args.get('start_month')
+    end_month = request.args.get('end_month')
+    camera = request.args.get('camera')
+    lens = request.args.get('lens')
 
     if not os.path.exists(DEST_DB_PATH):
         return jsonify([])
 
     conn = get_db_connection()
     try:
-        # We need to read all Keywords columns that are not empty
-        query = f"SELECT Keywords FROM {DEST_TABLE_NAME} WHERE Keywords IS NOT NULL AND Keywords != ''"
+        where_clause = "WHERE Keywords IS NOT NULL AND Keywords != ''"
+        params = []
+        
         if only_picks:
-            query += " AND pick = 1"
-        rows = conn.execute(query).fetchall()
+            where_clause += " AND pick = 1"
+        if start_month:
+            where_clause += " AND strftime('%Y-%m', CaptureTime) >= ?"
+            params.append(start_month)
+        if end_month:
+            where_clause += " AND strftime('%Y-%m', CaptureTime) <= ?"
+            params.append(end_month)
+        if camera:
+            where_clause += " AND Camera = ?"
+            params.append(camera)
+        if lens:
+            where_clause += " AND COALESCE(lm.GroupName, lr.Lens) = ?"
+            params.append(lens)
+
+        query = f"""
+            SELECT Keywords 
+            FROM {DEST_TABLE_NAME} lr
+            LEFT JOIN LensMappings lm ON lr.Lens = lm.OriginalName 
+            {where_clause}
+        """
+        rows = conn.execute(query, params).fetchall()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     finally:
