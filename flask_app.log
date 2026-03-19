@@ -50,3 +50,7 @@ Press CTRL+C to quit
 127.0.0.1 - - [19/Mar/2026 09:04:19] "POST /api/import HTTP/1.1" 200 -
 127.0.0.1 - - [19/Mar/2026 09:04:19] "GET /api/metrics HTTP/1.1" 200 -
 127.0.0.1 - - [19/Mar/2026 09:04:19] "GET /api/keyword_metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:10:18] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:10:18] "GET /static/favicon.png HTTP/1.1" 304 -
+127.0.0.1 - - [19/Mar/2026 09:10:18] "GET /api/metrics HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 09:10:19] "GET /api/keyword_metrics HTTP/1.1" 200 -
