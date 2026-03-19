@@ -134,3 +134,35 @@ Press CTRL+C to quit
 127.0.0.1 - - [19/Mar/2026 20:47:42] "GET /api/exif_metrics?start_month=0190-01& HTTP/1.1" 200 -
 127.0.0.1 - - [19/Mar/2026 20:47:42] "GET /api/exif_metrics?start_month=1900-01& HTTP/1.1" 200 -
 127.0.0.1 - - [19/Mar/2026 20:47:48] "GET /api/exif_metrics?start_month=1900-01&lens=EF70-200mm%20f/2.8L%20IS%20II%20USM HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:52:52] "GET /exif HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:52:53] "GET /static/favicon.png HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:52:53] "GET /api/filters HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:52:53] "GET /api/exif_metrics?start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:52:59] "GET /api/exif_metrics?start_month=2018-01&lens=EF70-200mm%20f/2.8L%20IS%20II%20USM HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:53:02] "GET /scatter HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:53:02] "GET /api/filters HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:53:02] "GET /api/scatter_metrics?start_month=2018-01&lens=EF70-200mm%20f/2.8L%20IS%20II%20USM HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:53:37] "GET /api/scatter_metrics?start_month=2018-01&lens=iPhone%2011%20back%20camera HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:06] "GET /exif HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:06] "GET /api/filters HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:06] "GET /api/exif_metrics?start_month=2018-01&lens=iPhone%2011%20back%20camera HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:16] "GET /explore HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:17] "GET /api/filters HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:17] "GET /api/explore_metrics?lens=iPhone%2011%20back%20camera&start_month=2018-01& HTTP/1.1" 200 -
+ * Detected change in '/Users/mark/Python/Lightroom/lightroom.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 126-526-228
+127.0.0.1 - - [19/Mar/2026 20:56:34] "GET /api/explore_metrics?start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:39] "GET /api/explore_metrics?camera=iPhone%2011&start_month=2018-01& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:42] "GET /scatter HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:42] "GET /api/filters HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:43] "GET /api/scatter_metrics?start_month=2018-01&camera=iPhone%2011& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:51] "GET /api/scatter_metrics?start_month=2018-01&camera=iPhone%2012& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:54] "GET /api/scatter_metrics?start_month=2018-01&camera=iPhone%2014& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:56:59] "GET /api/scatter_metrics?start_month=2018-01&camera=iPhone%206& HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2026 20:57:02] "GET /api/scatter_metrics?start_month=2018-01&camera=iPhone%2011& HTTP/1.1" 200 -
+ * Detected change in '/Users/mark/Python/Lightroom/lightroom.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 126-526-228

@@ -636,7 +636,7 @@ def scatter_metrics():
 
     result = {
         'aperture_shutter': [
-            {'aperture': r['aperture'], 'shutter': r['shutter_sec'], 'count': r['count']} 
+            {'aperture': round(float(r['aperture']), 1), 'shutter': r['shutter_sec'], 'count': r['count']} 
             for r in as_rows
         ],
         'shutter_iso': [
@@ -644,7 +644,7 @@ def scatter_metrics():
             for r in si_rows
         ],
         'iso_aperture': [
-            {'iso': r['iso_val'], 'aperture': r['aperture'], 'count': r['count']} 
+            {'iso': r['iso_val'], 'aperture': round(float(r['aperture']), 1), 'count': r['count']} 
             for r in ia_rows
         ]
     }
@@ -979,7 +979,7 @@ def lens_profile_metrics():
                 'data': [r['count'] for r in focal_rows]
             },
             'aperture': {
-                'labels': [str(r['aperture_val']) for r in aperture_rows],
+                'labels': [str(round(float(r['aperture_val']), 1)) for r in aperture_rows],
                 'data': [r['count'] for r in aperture_rows]
             }
         }
