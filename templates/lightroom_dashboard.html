@@ -209,30 +209,6 @@
                     }
                 }
             });
-
-            const ctx3 = document.getElementById('keywordsChart').getContext('2d');
-            keywordsChart = new Chart(ctx3, {
-                type: 'wordCloud',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Keywords',
-                        data: [],
-                        color: function() {
-                            const colors = ['#60a5fa', '#34d399', '#fbbf24', '#c084fc', '#f472b6', '#94a3b8'];
-                            return colors[Math.floor(Math.random() * colors.length)];
-                        }
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', titleColor: '#fff', bodyColor: '#cbd5e1', cornerRadius: 8 }
-                    }
-                }
-            });
         }
 
         async function loadMetrics() {
@@ -265,9 +241,43 @@
                     const kRes = await fetch('/api/keyword_metrics');
                     const kData = await kRes.json();
                     if (kData && kData.length > 0) {
-                        keywordsChart.data.labels = kData.map(d => d.text);
-                        keywordsChart.data.datasets[0].data = kData.map(d => d.weight);
-                        keywordsChart.update();
+                        const ctx3 = document.getElementById('keywordsChart').getContext('2d');
+                        if (keywordsChart) { keywordsChart.destroy(); }
+                        keywordsChart = new Chart(ctx3, {
+                            type: 'wordCloud',
+                            data: {
+                                labels: kData.map(d => d.text),
+                                datasets: [{
+                                    label: 'Keywords',
+                                    data: kData.map(d => Math.log2(d.weight) * 10), // Logarithmic scale for safe visual rendering
+                                    rawWeights: kData.map(d => d.weight), // Keep original numbers for the tooltip
+                                    color: function() {
+                                        const colors = ['#60a5fa', '#34d399', '#fbbf24', '#c084fc', '#f472b6', '#94a3b8'];
+                                        return colors[Math.floor(Math.random() * colors.length)];
+                                    }
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: { 
+                                        backgroundColor: 'rgba(15, 23, 42, 0.9)', 
+                                        titleColor: '#fff', 
+                                        bodyColor: '#cbd5e1', 
+                                        cornerRadius: 8,
+                                        callbacks: {
+                                            label: function(context) {
+                                                // Retrieve our unscaled original weight
+                                                const rawWeight = context.dataset.rawWeights[context.dataIndex];
+                                                return ' ' + rawWeight + ' photos';
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
                     }
                 } catch (e) {
                     console.error("Failed to load keyword metrics", e);
