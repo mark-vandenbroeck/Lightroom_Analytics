@@ -284,7 +284,7 @@ def metrics():
     """
     
     try:
-        rows = cursor.execute(query).fetchall()
+        rows = cursor.execute(query, params).fetchall()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     finally:
