@@ -971,13 +971,18 @@ def lens_profile_metrics():
 @app.route('/api/keyword_metrics')
 def keyword_metrics():
     """Returns aggregated keyword counts for word cloud."""
+    only_picks = request.args.get('only_picks', 'false').lower() == 'true'
+
     if not os.path.exists(DEST_DB_PATH):
         return jsonify([])
 
     conn = get_db_connection()
     try:
         # We need to read all Keywords columns that are not empty
-        rows = conn.execute(f"SELECT Keywords FROM {DEST_TABLE_NAME} WHERE Keywords IS NOT NULL AND Keywords != ''").fetchall()
+        query = f"SELECT Keywords FROM {DEST_TABLE_NAME} WHERE Keywords IS NOT NULL AND Keywords != ''"
+        if only_picks:
+            query += " AND pick = 1"
+        rows = conn.execute(query).fetchall()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     finally:

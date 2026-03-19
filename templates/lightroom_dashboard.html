@@ -82,9 +82,15 @@
                 </div>
             </div>
             <div class="glass p-6 rounded-2xl shadow-xl h-96 relative flex flex-col items-center justify-center dashboard-card hover:-translate-y-1 transition-transform duration-300">
-                <h2 class="text-lg font-semibold mb-4 w-full text-left text-slate-100 flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-purple-400"></span> {{ t('dashboard_chart_keywords') }}
-                </h2>
+                <div class="flex justify-between items-center w-full mb-4">
+                    <h2 class="text-lg font-semibold text-slate-100 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-purple-400"></span> {{ t('dashboard_chart_keywords') }}
+                    </h2>
+                    <label class="flex items-center gap-2 mb-0 text-sm font-medium text-slate-300 cursor-pointer hover:text-white transition-colors">
+                        <input type="checkbox" id="keywordsOnlyPicks" class="w-4 h-4 rounded border-slate-600 bg-slate-800 focus:ring-purple-500 checked:bg-purple-500 transition-colors">
+                        {{ t('dashboard_keywords_only_picks') }}
+                    </label>
+                </div>
                 <div class="flex-grow w-full relative">
                     <canvas id="keywordsChart"></canvas>
                 </div>
@@ -211,6 +217,51 @@
             });
         }
 
+        async function loadKeywordMetrics() {
+            try {
+                const onlyPicks = document.getElementById('keywordsOnlyPicks').checked;
+                const kRes = await fetch(`/api/keyword_metrics?only_picks=${onlyPicks}`);
+                const kData = await kRes.json();
+                
+                const canvas = document.getElementById('keywordsChart');
+                
+                if (kData && kData.length > 0) {
+                    // Set internal resolution of the canvas so WordCloud2 can draw crisply
+                    const rect = canvas.parentElement.getBoundingClientRect();
+                    canvas.width = rect.width || 800;
+                    canvas.height = rect.height || 300;
+
+                    const colors = ['#60a5fa', '#34d399', '#fbbf24', '#c084fc', '#f472b6', '#94a3b8'];
+                    
+                    WordCloud(canvas, {
+                        list: kData.map(d => [d.text, Math.max(14, Math.log2(d.weight) * 6), d.weight]), // [word, size, rawData]
+                        fontFamily: "'Inter', sans-serif",
+                        weightFactor: 1, 
+                        color: function() { return colors[Math.floor(Math.random() * colors.length)]; },
+                        rotateRatio: 0, // No rotation
+                        backgroundColor: 'transparent',
+                        shrinkToFit: true, // Forces drawing to scale down if it exceeds boundaries
+                        drawOutOfBound: false,
+                        hover: function(item) {
+                            if (item) {
+                                canvas.title = item[0] + ": " + item[2] + " photos";
+                                canvas.style.cursor = 'pointer';
+                            } else {
+                                canvas.title = "";
+                                canvas.style.cursor = 'default';
+                            }
+                        }
+                    });
+                } else {
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.title = "No keywords match this selection";
+                }
+            } catch (e) {
+                console.error("Failed to load keyword metrics", e);
+            }
+        }
+
         async function loadMetrics() {
             try {
                 const res = await fetch('/api/metrics');
@@ -237,42 +288,7 @@
                 picksChart.data.datasets[0].data = data.pick_percentage;
                 picksChart.update();
 
-                try {
-                    const kRes = await fetch('/api/keyword_metrics');
-                    const kData = await kRes.json();
-                    if (kData && kData.length > 0) {
-                        const canvas = document.getElementById('keywordsChart');
-                        
-                        // Set internal resolution of the canvas so WordCloud2 can draw crisply
-                        const rect = canvas.parentElement.getBoundingClientRect();
-                        canvas.width = rect.width || 800;
-                        canvas.height = rect.height || 300;
-
-                        const colors = ['#60a5fa', '#34d399', '#fbbf24', '#c084fc', '#f472b6', '#94a3b8'];
-                        
-                        WordCloud(canvas, {
-                            list: kData.map(d => [d.text, Math.max(14, Math.log2(d.weight) * 6), d.weight]), // [word, size, rawData]
-                            fontFamily: "'Inter', sans-serif",
-                            weightFactor: 1, 
-                            color: function() { return colors[Math.floor(Math.random() * colors.length)]; },
-                            rotateRatio: 0, // No rotation
-                            backgroundColor: 'transparent',
-                            shrinkToFit: true, // Forces drawing to scale down if it exceeds boundaries
-                            drawOutOfBound: false,
-                            hover: function(item) {
-                                if (item) {
-                                    canvas.title = item[0] + ": " + item[2] + " photos";
-                                    canvas.style.cursor = 'pointer';
-                                } else {
-                                    canvas.title = "";
-                                    canvas.style.cursor = 'default';
-                                }
-                            }
-                        });
-                    }
-                } catch (e) {
-                    console.error("Failed to load keyword metrics", e);
-                }
+                loadKeywordMetrics();
             } catch (err) {
                 console.error("Failed to load metrics", err);
             }
@@ -361,6 +377,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
             loadMetrics();
+            document.getElementById('keywordsOnlyPicks').addEventListener('change', loadKeywordMetrics);
         });
     </script>
 </body>

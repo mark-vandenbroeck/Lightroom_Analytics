@@ -117,5 +117,6 @@
     "shutter_handheld": {"en": "Handheld (1/100s - 1/10s)", "nl": "Uit de hand (1/100s - 1/10s)"},
     "shutter_slow": {"en": "Slow (1/10s - 1s)", "nl": "Langzaam (1/10s - 1s)"},
     "shutter_long": {"en": "Long Exposure (> 1s)", "nl": "Lange Sluitertijd (> 1s)"},
-    "dashboard_chart_keywords": {"en": "Top Keywords", "nl": "Meest Gebruikte Trefwoorden"}
+    "dashboard_chart_keywords": {"en": "Top Keywords", "nl": "Meest Gebruikte Trefwoorden"},
+    "dashboard_keywords_only_picks": {"en": "Only 'Picked' photos", "nl": "Alleen 'Geselecteerde' foto's"}
 }
