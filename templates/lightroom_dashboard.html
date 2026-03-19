@@ -248,6 +248,20 @@
             });
         }
 
+        function saveFilters() {
+            localStorage.setItem('lr_filter_dateFrom', document.getElementById('dateFrom').value);
+            localStorage.setItem('lr_filter_dateTo', document.getElementById('dateTo').value);
+            localStorage.setItem('lr_filter_camera', document.getElementById('cameraFilter').value);
+            localStorage.setItem('lr_filter_lens', document.getElementById('lensFilter').value);
+        }
+
+        function restoreDateFilters() {
+            const dF = localStorage.getItem('lr_filter_dateFrom');
+            if (dF) document.getElementById('dateFrom').value = dF;
+            const dT = localStorage.getItem('lr_filter_dateTo');
+            if (dT) document.getElementById('dateTo').value = dT;
+        }
+
         async function populateFilters() {
             try {
                 const res = await fetch('/api/filters');
@@ -269,6 +283,12 @@
                     opt.textContent = lens;
                     lensSelect.appendChild(opt);
                 });
+
+                const cF = localStorage.getItem('lr_filter_camera');
+                if (cF) cameraSelect.value = cF;
+                const lF = localStorage.getItem('lr_filter_lens');
+                if (lF) lensSelect.value = lF;
+
             } catch (err) { console.error("Filter population failed", err); }
         }
 
@@ -443,17 +463,32 @@
             }
         });
 
-        document.getElementById('dateFrom').addEventListener('change', loadMetrics);
-        document.getElementById('dateTo').addEventListener('change', loadMetrics);
-        document.getElementById('cameraFilter').addEventListener('change', loadMetrics);
-        document.getElementById('lensFilter').addEventListener('change', loadMetrics);
+        function handleFilterChange() {
+            saveFilters();
+            loadMetrics();
+            loadKeywordMetrics();
+        }
+
+        document.getElementById('dateFrom').addEventListener('change', handleFilterChange);
+        document.getElementById('dateTo').addEventListener('change', handleFilterChange);
+        document.getElementById('cameraFilter').addEventListener('change', handleFilterChange);
+        document.getElementById('lensFilter').addEventListener('change', handleFilterChange);
 
         // Init
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             initCharts();
-            populateFilters();
+            restoreDateFilters();
+            await populateFilters();
+            
+            const kwPick = localStorage.getItem('lr_filter_keywordsOnlyPicks');
+            if (kwPick) document.getElementById('keywordsOnlyPicks').checked = (kwPick === 'true');
+            
             loadMetrics();
-            document.getElementById('keywordsOnlyPicks').addEventListener('change', loadKeywordMetrics);
+            
+            document.getElementById('keywordsOnlyPicks').addEventListener('change', (e) => {
+                localStorage.setItem('lr_filter_keywordsOnlyPicks', e.target.checked);
+                loadKeywordMetrics();
+            });
         });
     </script>
 </body>

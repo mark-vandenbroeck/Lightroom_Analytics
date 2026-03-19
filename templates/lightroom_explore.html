@@ -177,6 +177,20 @@
             });
         }
 
+        function saveFilters() {
+            localStorage.setItem('lr_filter_dateFrom', document.getElementById('dateFrom').value);
+            localStorage.setItem('lr_filter_dateTo', document.getElementById('dateTo').value);
+            localStorage.setItem('lr_filter_camera', document.getElementById('cameraFilter').value);
+            localStorage.setItem('lr_filter_lens', document.getElementById('lensFilter').value);
+        }
+
+        function restoreDateFilters() {
+            const dF = localStorage.getItem('lr_filter_dateFrom');
+            if (dF) document.getElementById('dateFrom').value = dF;
+            const dT = localStorage.getItem('lr_filter_dateTo');
+            if (dT) document.getElementById('dateTo').value = dT;
+        }
+
         async function loadFilters() {
             try {
                 const res = await fetch('/api/filters');
@@ -197,6 +211,12 @@
                     opt.textContent = lens;
                     lensSelect.appendChild(opt);
                 });
+
+                const cF = localStorage.getItem('lr_filter_camera');
+                if (cF) cameraSelect.value = cF;
+                const lF = localStorage.getItem('lr_filter_lens');
+                if (lF) lensSelect.value = lF;
+
             } catch (err) { console.error("Filter load failed", err); }
         }
 
@@ -236,14 +256,21 @@
             } catch (err) { console.error("Data load failed", err); }
         }
 
-        document.getElementById('cameraFilter').addEventListener('change', loadData);
-        document.getElementById('lensFilter').addEventListener('change', loadData);
-        document.getElementById('dateFrom').addEventListener('change', loadData);
-        document.getElementById('dateTo').addEventListener('change', loadData);
+        function handleFilterChange() {
+            saveFilters();
+            loadData();
+        }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('cameraFilter').addEventListener('change', handleFilterChange);
+        document.getElementById('lensFilter').addEventListener('change', handleFilterChange);
+        document.getElementById('dateFrom').addEventListener('change', handleFilterChange);
+        document.getElementById('dateTo').addEventListener('change', handleFilterChange);
+
+        document.addEventListener('DOMContentLoaded', async () => {
             initCharts();
-            loadFilters().then(loadData);
+            restoreDateFilters();
+            await loadFilters();
+            loadData();
         });
     </script>
 </body>
