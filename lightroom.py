@@ -213,32 +213,43 @@ def import_catalog():
     if not rows:
         return jsonify({'error': 'No data found with the given query.'}), 404
 
-    # Save to local destination database without destroying LensMappings
-    conn_dest = get_db_connection()
-    cursor_dest = conn_dest.cursor()
-
-    # Drop only the target table
-    cursor_dest.execute(f"DROP TABLE IF EXISTS {DEST_TABLE_NAME}")
-
-    # Determine column types based on the first row
-    first_row = rows[0]
-    col_defs = []
-    for col_name, val in zip(columns, first_row):
-        col_type = get_sqlite_type(val)
-        col_defs.append(f'"{col_name}" {col_type}')
-
-    create_table_sql = f"CREATE TABLE IF NOT EXISTS {DEST_TABLE_NAME} ({', '.join(col_defs)});"
-    cursor_dest.execute(create_table_sql)
-
-    placeholders = ', '.join(['?'] * len(columns))
-    insert_sql = f"INSERT INTO {DEST_TABLE_NAME} VALUES ({placeholders})"
+    try:
+        # Save to local destination database without destroying LensMappings
+        conn_dest = get_db_connection()
+        # Accelerate heavy batch inserts locally too
+        conn_dest.execute("PRAGMA synchronous = OFF;")
+        conn_dest.execute("PRAGMA journal_mode = MEMORY;")
+        
+        cursor_dest = conn_dest.cursor()
     
-    cursor_dest.executemany(insert_sql, rows)
-    conn_dest.commit()
+        # Drop only the target table
+        cursor_dest.execute(f"DROP TABLE IF EXISTS {DEST_TABLE_NAME}")
     
-    cursor_dest.execute(f"SELECT COUNT(*) FROM {DEST_TABLE_NAME}")
-    count = cursor_dest.fetchone()[0]
-    conn_dest.close()
+        # Determine column types based on the first row
+        first_row = rows[0]
+        col_defs = []
+        for col_name, val in zip(columns, first_row):
+            col_type = get_sqlite_type(val)
+            col_defs.append(f'"{col_name}" {col_type}')
+    
+        create_table_sql = f"CREATE TABLE IF NOT EXISTS {DEST_TABLE_NAME} ({', '.join(col_defs)});"
+        cursor_dest.execute(create_table_sql)
+    
+        placeholders = ', '.join(['?'] * len(columns))
+        insert_sql = f"INSERT INTO {DEST_TABLE_NAME} VALUES ({placeholders})"
+        
+        cursor_dest.executemany(insert_sql, rows)
+        conn_dest.commit()
+        
+        cursor_dest.execute(f"SELECT COUNT(*) FROM {DEST_TABLE_NAME}")
+        count = cursor_dest.fetchone()[0]
+    except Exception as e:
+        if 'conn_dest' in locals() and conn_dest:
+            conn_dest.close()
+        return jsonify({'error': f'Failed to insert records: {str(e)}'}), 500
+    finally:
+        if 'conn_dest' in locals() and conn_dest:
+            conn_dest.close()
 
     return jsonify({'success': True, 'rows_inserted': count})
 
